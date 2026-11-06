@@ -421,16 +421,18 @@
 <div class="sticky" id="sticky"><a class="btn btn-gold js-tally" data-weg="vergleich" href="#">Jetzt kostenlos prüfen</a></div>
 
 <script>
-  /* ===== HIER DEN TALLY-LINK EINTRAGEN ===== */
-  const TALLY_URL = "https://tally.so/r/Eq51Dr";
+  /* ===== Tally-Formulare ===== */
+  const TALLY = {
+    vergleich: "https://tally.so/r/Eq51Dr",  // Neukunden: KFZ-Vergleich
+    check:     "https://tally.so/r/dbNPEA"   // Bestandskunden: Service-Check
+  };
   const PAGE_URL  = "https://nenad-sliskovic.de/kfz/";
 
-  // Tally-Links mit Hidden Fields "weg" (vergleich | check) und "ref" (Empfehlung)
+  // Empfehlungsgeber (?ref=Name) an den Vergleichsbogen weitergeben
   const ref = new URLSearchParams(location.search).get("ref");
   document.querySelectorAll(".js-tally").forEach(a => {
-    const u = new URL(TALLY_URL);
-    u.searchParams.set("weg", a.dataset.weg);
-    if (ref) u.searchParams.set("ref", ref);
+    const u = new URL(TALLY[a.dataset.weg]);
+    if (ref && a.dataset.weg === "vergleich") u.searchParams.set("ref", ref);
     a.href = u.toString(); a.target = "_blank"; a.rel = "noopener";
   });
 
