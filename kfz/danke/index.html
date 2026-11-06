@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fragebogen eingereicht – KFZ-Check</title>
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="/fonts/inter.css">
+<style>
+  :root{--navy:#1F396A;--navy-d:#172d55;--gold:#DDAE36;--grey:#424242;--muted:#5d6675;--mist-l:#e8eef4}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:var(--grey);background:#fff;line-height:1.55;-webkit-font-smoothing:antialiased;min-height:100vh}
+  .hero{background:var(--navy);color:#fff;padding:72px 22px 120px;clip-path:polygon(0 0,100% 0,100% 82%,0 100%);text-align:center}
+  .check{width:76px;height:76px;border-radius:50%;background:var(--gold);display:grid;place-items:center;margin:0 auto 24px}
+  .check svg{width:38px;height:38px;stroke:#fff}
+  h1{font-size:clamp(28px,6vw,44px);line-height:1.1;font-weight:800;text-transform:uppercase;letter-spacing:.5px;margin-bottom:14px}
+  .hero p{font-size:clamp(17px,2.4vw,20px);font-weight:600;opacity:.92;max-width:520px;margin:0 auto}
+  .box{max-width:560px;margin:-70px auto 40px;background:#fff;border-radius:24px;padding:36px 28px;text-align:center;box-shadow:0 24px 60px -30px rgba(31,57,106,.45);position:relative;margin-left:auto;margin-right:auto}
+  .wrap{padding:0 16px}
+  .box h2{color:var(--navy);font-size:24px;font-weight:800;line-height:1.25;margin-bottom:10px}
+  .box p{color:var(--muted);font-size:16.5px;margin-bottom:26px}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;text-decoration:none;font-weight:800;font-size:17px;padding:18px 30px;border-radius:999px;width:100%;max-width:380px;transition:transform .15s,background .15s}
+  .btn:hover{transform:translateY(-2px)}
+  .btn svg{width:20px;height:20px}
+  .btn-wa{background:#1f8f4e;color:#fff;box-shadow:0 12px 30px -10px rgba(31,143,78,.6)}
+  .btn-wa:hover{background:#187a42}
+  .back{display:inline-block;margin-top:20px;color:var(--navy);font-weight:600;font-size:15px;text-decoration:none}
+  .back:hover{text-decoration:underline}
+  footer{text-align:center;font-size:13px;color:var(--muted);padding:10px 16px 36px}
+  footer a{color:var(--navy);text-decoration:none;margin:0 8px;font-weight:600}
+</style>
+</head>
+<body>
+  <header class="hero">
+    <div class="check"><svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></div>
+    <h1>Fragebogen eingereicht</h1>
+    <p>Danke! Ich habe alles bekommen und melde mich innerhalb von 48 Stunden bei dir.</p>
+  </header>
+
+  <div class="wrap">
+    <div class="box">
+      <h2>Kennst du jemanden, der auch zu viel zahlt?</h2>
+      <p>Fast jeder hat ein Auto. Schick den Flyer an Freunde, Familie oder Kollegen, ich prüfe auch für sie kostenlos.</p>
+      <a class="btn btn-wa" id="wa" href="#">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.7-1.4.1-.2 0-.3 0-.5l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.5.1-.7.3-.2.3-.9.9-.9 2.2s.9 2.5 1 2.7c.1.2 1.8 2.8 4.4 3.9 1.6.7 2.3.8 3.1.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.3-.2-.5-.3z"/></svg>
+        Flyer per WhatsApp teilen</a>
+      <br><a class="back" href="/kfz/">← Zurück zur Seite</a>
+    </div>
+  </div>
+
+  <footer>
+    Nenad Sliskovic · 0151 61034133
+    <br><a href="/kfz/impressum/">Impressum</a><a href="/kfz/datenschutz/">Datenschutz</a>
+  </footer>
+
+<script>
+  const shareUrl = "https://nenad-sliskovic.de/kfz/";
+  const shareText = "Schau mal: Nenad prüft kostenlos deine KFZ-Versicherung – einfach Fragebogen ausfüllen. Wechsel geht noch bis 30.11.: " + shareUrl;
+  const wa = document.getElementById("wa");
+  wa.href = "https://wa.me/?text=" + encodeURIComponent(shareText); wa.target = "_blank"; wa.rel = "noopener";
+  // Am Handy: Flyer als Bild + Text über das Teilen-Menü. Sonst: Text mit Link über wa.me.
+  let flyerFile = null;
+  fetch("/kfz/flyer.jpg").then(r => r.ok ? r.blob() : null).then(b => {
+    if (!b) return;
+    const f = new File([b], "KFZ-Check-Flyer.jpg", { type: "image/jpeg" });
+    try { if (navigator.canShare && navigator.canShare({ files: [f] })) flyerFile = f; } catch (e) {}
+  }).catch(() => {});
+  wa.addEventListener("click", (e) => {
+    if (!flyerFile) return;
+    e.preventDefault();
+    navigator.share({ files: [flyerFile], text: shareText }).catch(err => {
+      if (!err || err.name !== "AbortError") window.open(wa.href, "_blank");
+    });
+  });
+</script>
+</body>
+</html>
