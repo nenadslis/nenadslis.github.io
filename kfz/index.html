@@ -7,6 +7,9 @@
 <meta name="description" content="Zahlst du auch zu viel für deine KFZ-Versicherung? Lass deinen Vertrag kostenlos und unverbindlich prüfen. Wechselstichtag 30.11.">
 <meta property="og:title" content="Zahlst du auch zu viel für deine KFZ-Versicherung?">
 <meta property="og:description" content="Kostenlos und unverbindlich prüfen lassen – einfach, schnell, unkompliziert. Wechselstichtag 30.11.">
+<meta property="og:image" content="https://nenad-sliskovic.de/kfz/flyer.jpg">
+<meta property="og:url" content="https://nenad-sliskovic.de/kfz/">
+<meta property="og:type" content="website">
 <link rel="stylesheet" href="/fonts/inter.css">
 <style>
   :root{
@@ -334,7 +337,7 @@
       <div class="share-row">
         <a class="btn btn-wa" id="wa" href="#">
           <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.7-1.4.1-.2 0-.3 0-.5l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.5.1-.7.3-.2.3-.9.9-.9 2.2s.9 2.5 1 2.7c.1.2 1.8 2.8 4.4 3.9 1.6.7 2.3.8 3.1.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.3-.2-.5-.3z"/></svg>
-          Per WhatsApp teilen</a>
+          Flyer per WhatsApp teilen</a>
         <button class="btn btn-line" id="copy" type="button">Link kopieren</button>
       </div>
       <div class="copied" id="copied" aria-live="polite"></div>
@@ -438,6 +441,21 @@
   const shareText = "Schau mal: Nenad prüft kostenlos deine KFZ-Versicherung – einfach Fragebogen ausfüllen. Wechsel geht noch bis 30.11.: " + shareUrl;
   const wa = document.getElementById("wa");
   wa.href = "https://wa.me/?text=" + encodeURIComponent(shareText); wa.target = "_blank"; wa.rel = "noopener";
+  // Am Handy: Flyer als Bild + Text über das Teilen-Menü (dort WhatsApp wählen).
+  // Am Computer oder ohne Datei-Teilen: Text mit Link über wa.me (Vorschau zeigt den Flyer).
+  let flyerFile = null;
+  fetch("flyer.jpg").then(r => r.ok ? r.blob() : null).then(b => {
+    if (!b) return;
+    const f = new File([b], "KFZ-Check-Flyer.jpg", { type: "image/jpeg" });
+    try { if (navigator.canShare && navigator.canShare({ files: [f] })) flyerFile = f; } catch (e) {}
+  }).catch(() => {});
+  wa.addEventListener("click", (e) => {
+    if (!flyerFile) return;
+    e.preventDefault();
+    navigator.share({ files: [flyerFile], text: shareText }).catch(err => {
+      if (!err || err.name !== "AbortError") window.open(wa.href, "_blank");
+    });
+  });
   document.getElementById("copy").addEventListener("click", async () => {
     const out = document.getElementById("copied");
     try { await navigator.clipboard.writeText(shareUrl); out.textContent = "Link kopiert ✓"; }
